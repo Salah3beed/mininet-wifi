@@ -111,6 +111,19 @@ if [ "$PYTHON_VERSION" == unknown ]; then
     exit 1
 fi
 echo "Detected Python (${PYTHON}) version ${PYTHON_VERSION}"
+LIB_PATH=$(find /usr/lib -type d -name "python${PYTHON_VERSION}")
+if [ -z "$LIB_PATH" ]; then
+	echo "Python library path for version $PYTHON_VERSION not found."
+	exit 1
+fi
+SOURCE_PATH="${LIB_PATH}/EXTERNALLY-MANAGED"
+DEST_PATH="${LIB_PATH}/EXTERNALLY-MANAGED.old"
+if [ -e "$SOURCE_PATH" ]; then
+	sudo mv "$SOURCE_PATH" "$DEST_PATH"
+	echo "Moved $SOURCE_PATH to $DEST_PATH"
+else
+	echo "Source path $SOURCE_PATH does not exist"
+fi
 
 
 DRIVERS_DIR=/lib/modules/${KERNEL_NAME}/kernel/drivers/net
